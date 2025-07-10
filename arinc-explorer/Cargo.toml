@@ -1,0 +1,13 @@
+[package]
+name = "arinc-explorer"
+version = "0.0.1"
+description = "Library to analyse ARINC 665 files."
+categories = ["arinc"]
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+keywords.workspace = true
+
+[dependencies]

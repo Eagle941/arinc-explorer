@@ -1,0 +1,18 @@
+[package]
+name = "cli"
+version = "0.0.1"
+description = "A CLI tool to interact with arinc-explorer through command line."
+categories = ["arinc"]
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+keywords.workspace = true
+
+# Prevent publishing by accident.
+publish = false
+
+[dependencies]
+arinc-explorer = { path = "../arinc-explorer" }
+clap = { version = "4.5.3", features = ["derive"] }

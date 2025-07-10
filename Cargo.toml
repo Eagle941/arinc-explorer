@@ -1,0 +1,19 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "cli",
+    "arinc-explorer"
+]
+
+[workspace.package]
+# If this version is changed, amend the edition set in `rustfmt.toml`.
+edition = "2021"
+# If this version is changed, amend the version set in `build.yml`.
+rust-version = "1.74.0"
+license = "Apache-2.0"
+repository = "https://github.com/eagle941/arinc-explorer"
+keywords = ["arinc"]
+readme = "README.md"
+
+[workspace.dependencies]
