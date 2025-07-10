@@ -11,3 +11,5 @@ readme.workspace = true
 keywords.workspace = true
 
 [dependencies]
+binrw = "0.15.0"
+thiserror = "2.0.12"
