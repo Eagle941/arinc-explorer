@@ -94,3 +94,24 @@ jobs:
           target/
     - name: Cargo doc
       run: cargo doc --no-deps --document-private-items --locked
+
+  licensing:
+    name: Licenses
+    runs-on: "ubuntu-latest"
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    - name: Rust cache
+      uses: Swatinem/rust-cache@v2
+      with:
+        shared-key: "licensing-cache"
+        cache-all-crates: "true"
+        cache-directories: |
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+    - uses: EmbarkStudios/cargo-deny-action@v2.0.12
+      with:
+        manifest-path: ./Cargo.toml
+        command: check
