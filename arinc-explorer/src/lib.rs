@@ -11,5 +11,7 @@
 // LSP = Loadable Software Parts
 // MSP = Media Set Parts
 mod error;
+mod file_class;
+pub mod files;
 pub mod loads;
 mod utils;

@@ -7,26 +7,11 @@ use binrw::{binrw, BinRead};
 use lsp::Lsp;
 
 use crate::error::LoadsLumError;
+use crate::file_class::FileClass;
 use crate::utils::{combine_words, vec16_to_string};
 
 mod lsp;
 mod target_hw;
-
-#[derive(Debug, Clone, Eq, PartialEq)]
-enum FileClass {
-    Load,
-    Batch,
-    Media,
-}
-impl Display for FileClass {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        match self {
-            FileClass::Load => write!(f, "Load File"),
-            FileClass::Batch => write!(f, "Batch File"),
-            FileClass::Media => write!(f, "Media File"),
-        }
-    }
-}
 
 #[binrw]
 #[brw(big)]
