@@ -12,6 +12,22 @@ use crate::utils::{combine_words, vec16_to_string};
 mod lsp;
 mod target_hw;
 
+#[derive(Debug, Clone, Eq, PartialEq)]
+enum FileClass {
+    Load,
+    Batch,
+    Media,
+}
+impl Display for FileClass {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match self {
+            FileClass::Load => write!(f, "Load File"),
+            FileClass::Batch => write!(f, "Batch File"),
+            FileClass::Media => write!(f, "Media File"),
+        }
+    }
+}
+
 #[binrw]
 #[brw(big)]
 #[derive(Debug, Clone, Eq, PartialEq, Default)]
@@ -65,12 +81,19 @@ impl LoadsLum {
         Ok(loads_lum)
     }
 
-    fn get_file_type_string(&self) -> String {
+    fn get_file_type(&self) -> Option<FileClass> {
         match self.media_file_format_verion {
-            0x8002..=0x8004 => "Load file".to_string(),
-            0x9004 => "Batch file".to_string(),
-            0xA004 => "Media file".to_string(),
-            x => format!("{x} Unrecognised file"),
+            0x8002..=0x8004 => Some(FileClass::Load),
+            0x9004 => Some(FileClass::Batch),
+            0xA004 => Some(FileClass::Media),
+            _ => None,
+        }
+    }
+
+    fn get_file_type_string(&self) -> String {
+        match self.get_file_type() {
+            Some(x) => x.to_string(),
+            None => format!("{} unrecognised file class", self.media_file_format_verion),
         }
     }
 
@@ -122,7 +145,7 @@ impl Display for LoadsLum {
              Media number\n{} Total Media sets\n{} Total loads\n{}\n{:?} User Data\n0x{:x} CRC",
             self.get_file_length() * 2,
             self.get_file_type_string(),
-            self.get_pointer_to_number_of_loads(),
+            self.get_pointer_to_media_set_pn_length(),
             self.get_pointer_to_number_of_loads(),
             self.get_pointer_to_user_defined_data(),
             self.media_set_pn_length,
@@ -143,13 +166,28 @@ mod tests {
 
     use super::*;
 
-    #[ignore = "File not available"]
     #[test]
     fn test_simple_loads_lum() {
         // 1 hex = 4 bits
         // 4 hex = 16 bits = 2 bytes
-        let file = PathBuf::from("../../LOADS.LUM");
+        let file = PathBuf::from("../test-data/LOADS.LUM");
         let loads_lum = LoadsLum::new(file.as_path()).unwrap();
+
+        assert_eq!(loads_lum.get_file_length(), 39);
+        assert_eq!(loads_lum.media_file_format_verion, 0x8002);
+        assert_eq!(loads_lum.get_pointer_to_media_set_pn_length(), 0x9);
+        assert_eq!(loads_lum.get_pointer_to_number_of_loads(), 0x10);
+        assert_eq!(loads_lum.get_pointer_to_user_defined_data(), 0x0);
+        assert_eq!(loads_lum.media_set_pn_length, 10);
+        assert_eq!(loads_lum.media_set_pn.len(), 5);
+        assert_eq!(loads_lum.get_media_set_pn(), "ABCDEFGH12");
+        assert_eq!(loads_lum.media_sequence_number_x, 1);
+        assert_eq!(loads_lum.number_of_media_set_members_y, 1);
+        assert_eq!(loads_lum.number_of_loads, 1);
+        assert_eq!(loads_lum.loads.len(), 1);
+        assert_eq!(loads_lum.user_defined_data, None);
+        assert_eq!(loads_lum.file_crc, 0x5246);
+
         println!("{loads_lum}");
     }
 }
