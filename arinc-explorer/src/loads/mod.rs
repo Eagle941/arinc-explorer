@@ -172,6 +172,7 @@ mod tests {
         // 4 hex = 16 bits = 2 bytes
         let file = PathBuf::from("../test-data/LOADS.LUM");
         let loads_lum = LoadsLum::new(file.as_path()).unwrap();
+        println!("{loads_lum}");
 
         assert_eq!(loads_lum.get_file_length(), 39);
         assert_eq!(loads_lum.media_file_format_verion, 0x8002);
@@ -187,7 +188,5 @@ mod tests {
         assert_eq!(loads_lum.loads.len(), 1);
         assert_eq!(loads_lum.user_defined_data, None);
         assert_eq!(loads_lum.file_crc, 0x5246);
-
-        println!("{loads_lum}");
     }
 }
