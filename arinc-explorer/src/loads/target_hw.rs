@@ -24,7 +24,10 @@ impl Display for TargetHW {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(
             f,
-            "\t\t{} Chars in Target HW ID\n\t\t{} Target HW ID",
+            " \
+            \t\t{} Chars in Target HW ID\n \
+            \t\t{} Target HW ID\n \
+            \n",
             self.target_hw_id_length,
             self.get_target_hw_id(),
         )

@@ -126,8 +126,19 @@ impl Display for LoadsLum {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(
             f,
-            "{} Bytes\n{}\n{} | {} | {} Offsets\n{} Chars in Media Set PN\n{} Media Set PN\n{} \
-             Media number\n{} Total Media sets\n{} Total loads\n{}\n{:?} User Data\n0x{:x} CRC",
+            " \
+            {} Bytes\n \
+            {}\n \
+            {} | {} | {} Offsets\n \
+            {} Chars in Media Set PN\n \
+            {} Media Set PN\n \
+            {} Media number\n \
+            {} Total Media sets\n \
+            {} Total loads\n \
+            {}\n \
+            {:?} User Data\n \
+            0x{:x} CRC \
+            ",
             self.get_file_length() * 2,
             self.get_file_type_string(),
             self.get_pointer_to_media_set_pn_length(),
@@ -138,7 +149,10 @@ impl Display for LoadsLum {
             self.media_sequence_number_x,
             self.number_of_media_set_members_y,
             self.number_of_loads,
-            self.loads[0],
+            self.loads
+                .iter()
+                .map(|f| format!("{f}"))
+                .fold(String::new(), |acc, arg| acc + arg.as_str()),
             self.user_defined_data,
             self.file_crc
         )
