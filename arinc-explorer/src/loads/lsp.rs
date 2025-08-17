@@ -44,8 +44,16 @@ impl Display for Lsp {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(
             f,
-            "\t{} Offsets\n\t{} Chars in Load PN\n\t{} Load PN\n\t{} Chars in Header \
-             filename\n\t{} Header filename\n\t{} Sequence number\n\t{} Total target HW IDs\n{}",
+            " \
+            \t{} Offsets\n \
+            \t{} Chars in Load PN\n \
+            \t{} Load PN\n \
+            \t{} Chars in Header filename\n \
+            \t{} Header filename\n \
+            \t{} Sequence number\n \
+            \t{} Total target HW IDs\n \
+            {}\n \
+            \n",
             self.load_pointer,
             self.load_pn_length,
             self.get_load_pn(),
@@ -53,7 +61,10 @@ impl Display for Lsp {
             self.get_header_filename(),
             self.member_sequence_number,
             self.number_of_target_hw_ids,
-            self.target_hw_ids[0]
+            self.target_hw_ids
+                .iter()
+                .map(|f| format!("{f}"))
+                .fold(String::new(), |acc, arg| acc + arg.as_str())
         )
     }
 }
