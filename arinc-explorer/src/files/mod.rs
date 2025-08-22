@@ -44,8 +44,8 @@ pub struct FilesLum {
     #[br(if(combine_words(pointer_to_user_defined_data_msb, pointer_to_user_defined_data_lsb)!=0), count = (combine_words(file_length_msb, file_length_lsb) - combine_words(pointer_to_user_defined_data_msb, pointer_to_user_defined_data_lsb) - 1).div_ceil(2))]
     user_defined_data: Option<Vec<u16>>,
     // Seems like the following fields don't exist
-    // #[br(if(combine_words(pointer_to_file_check_value_length_msb, pointer_to_file_check_value_length_lsb)!=0))]
-    // file_check_value_length: Option<u16>,
+    // #[br(if(combine_words(pointer_to_file_check_value_length_msb,
+    // pointer_to_file_check_value_length_lsb)!=0))] file_check_value_length: Option<u16>,
     // #[br(if(file_check_value_length!=0))]
     // file_check_value_type: Option<u16>,
     // #[br(if(file_check_value_length!=0), count = file_check_value_length.div_ceil(2))]
@@ -131,6 +131,7 @@ impl FilesLum {
     }
 }
 impl Display for FilesLum {
+    #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(
             f,

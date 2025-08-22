@@ -7,6 +7,7 @@ use crate::utils::vec16_to_string;
 #[binrw]
 #[brw(big)]
 #[derive(Debug, Clone, Eq, PartialEq, Default)]
+#[allow(clippy::struct_field_names)]
 pub struct File {
     file_pointer: u16,
     file_name_length: u16, // number of chars
@@ -44,6 +45,7 @@ impl File {
     }
 }
 impl Display for File {
+    #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(
             f,

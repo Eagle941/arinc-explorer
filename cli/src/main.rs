@@ -2,7 +2,8 @@ use std::path::PathBuf;
 use std::process;
 
 use anyhow::anyhow;
-use arinc_explorer::{files::FilesLum, loads::LoadsLum};
+use arinc_explorer::files::FilesLum;
+use arinc_explorer::loads::LoadsLum;
 use clap::Parser;
 use exitcode::{OK, SOFTWARE};
 
