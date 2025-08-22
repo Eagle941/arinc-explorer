@@ -41,6 +41,7 @@ impl Lsp {
     }
 }
 impl Display for Lsp {
+    #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(
             f,

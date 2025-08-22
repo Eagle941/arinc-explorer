@@ -123,6 +123,7 @@ impl LoadsLum {
     }
 }
 impl Display for LoadsLum {
+    #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(
             f,

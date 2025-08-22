@@ -21,6 +21,7 @@ impl TargetHW {
     }
 }
 impl Display for TargetHW {
+    #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(
             f,
