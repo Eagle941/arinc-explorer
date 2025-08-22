@@ -2,7 +2,7 @@ name: Push Checks
 on: push
 
 env:
-  RUST_VERSION: 1.74.0 # If this is updated, update `Cargo.toml`.
+  RUST_VERSION: 1.87.0 # If this is updated, update `Cargo.toml`.
   CARGO_TERM_COLOR: always
   RUSTDOCFLAGS: "-D warnings" # Fail on `cargo doc` warnings.
 
