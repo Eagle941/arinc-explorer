@@ -20,7 +20,9 @@ pub struct LoadsLum {
     file_length_msb: u16,
     file_length_lsb: u16,
     media_file_format_verion: u16,
-    //spare: u16, // Seems like the spare doesn't exist
+
+    #[br(if(media_file_format_verion!=0x8002))]
+    spare: u16,
     pointer_to_media_set_pn_length_msb: u16,
     pointer_to_media_set_pn_length_lsb: u16,
     pointer_to_number_of_loads_msb: u16,
@@ -66,17 +68,8 @@ impl LoadsLum {
         Ok(loads_lum)
     }
 
-    fn get_file_type(&self) -> Option<FileClass> {
-        match self.media_file_format_verion {
-            0x8002..=0x8004 => Some(FileClass::Load),
-            0x9004 => Some(FileClass::Batch),
-            0xA004 => Some(FileClass::Media),
-            _ => None,
-        }
-    }
-
     fn get_file_type_string(&self) -> String {
-        match self.get_file_type() {
+        match FileClass::get_file_type(self.media_file_format_verion) {
             Some(x) => x.to_string(),
             None => format!("{} unrecognised file class", self.media_file_format_verion),
         }

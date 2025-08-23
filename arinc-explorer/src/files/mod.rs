@@ -19,16 +19,21 @@ pub struct FilesLum {
     file_length_msb: u16,
     file_length_lsb: u16,
     media_file_format_verion: u16,
-    //spare: u16, // Seems like the spare doesn't exist
+
+    #[br(if(media_file_format_verion!=0x8002))]
+    spare: u16,
     pointer_to_media_set_pn_length_msb: u16,
     pointer_to_media_set_pn_length_lsb: u16,
     pointer_to_number_of_media_set_files_msb: u16,
     pointer_to_number_of_media_set_files_lsb: u16,
     pointer_to_user_defined_data_msb: u16,
     pointer_to_user_defined_data_lsb: u16,
-    // Seems like pointer_to_file_check_value_length doesn't exist
-    // pointer_to_file_check_value_length_msb: u16,
-    // pointer_to_file_check_value_length_lsb: u16,
+
+    #[br(if(media_file_format_verion!=0x8002))]
+    pointer_to_file_check_value_length_msb: u16,
+
+    #[br(if(media_file_format_verion!=0x8002))]
+    pointer_to_file_check_value_length_lsb: u16,
     // Expansion point no1
     media_set_pn_length: u16, // number of chars
 
@@ -43,13 +48,16 @@ pub struct FilesLum {
     // Expansion point no3
     #[br(if(combine_words(pointer_to_user_defined_data_msb, pointer_to_user_defined_data_lsb)!=0), count = (combine_words(file_length_msb, file_length_lsb) - combine_words(pointer_to_user_defined_data_msb, pointer_to_user_defined_data_lsb) - 1).div_ceil(2))]
     user_defined_data: Option<Vec<u16>>,
-    // Seems like the following fields don't exist
-    // #[br(if(combine_words(pointer_to_file_check_value_length_msb,
-    // pointer_to_file_check_value_length_lsb)!=0))] file_check_value_length: Option<u16>,
-    // #[br(if(file_check_value_length!=0))]
-    // file_check_value_type: Option<u16>,
-    // #[br(if(file_check_value_length!=0), count = file_check_value_length.div_ceil(2))]
-    // file_check_value: Option<Vec<u16>>,
+
+    #[br(if(media_file_format_verion!=0x8002 && combine_words(pointer_to_file_check_value_length_msb, pointer_to_file_check_value_length_lsb)!=0))]
+    file_check_value_length: Option<u16>,
+
+    #[br(if(media_file_format_verion!=0x8002 && file_check_value_length.is_some()))]
+    file_check_value_type: Option<u16>,
+
+    #[br(if(media_file_format_verion!=0x8002 && file_check_value_length.is_some()), count = file_check_value_length.unwrap_or_default().div_ceil(2))]
+    file_check_value: Option<Vec<u16>>,
+
     file_crc: u16,
 }
 impl FilesLum {
@@ -74,17 +82,8 @@ impl FilesLum {
         Ok(files_lum)
     }
 
-    fn get_file_type(&self) -> Option<FileClass> {
-        match self.media_file_format_verion {
-            0x8002..=0x8004 => Some(FileClass::Load),
-            0x9004 => Some(FileClass::Batch),
-            0xA004 => Some(FileClass::Media),
-            _ => None,
-        }
-    }
-
     fn get_file_type_string(&self) -> String {
-        match self.get_file_type() {
+        match FileClass::get_file_type(self.media_file_format_verion) {
             Some(x) => x.to_string(),
             None => format!("{} unrecognised file class", self.media_file_format_verion),
         }

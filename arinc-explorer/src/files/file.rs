@@ -4,6 +4,7 @@ use binrw::binrw;
 
 use crate::utils::vec16_to_string;
 
+// TODO: pass number_of_media_set_files to support ARINC665-5
 #[binrw]
 #[brw(big)]
 #[derive(Debug, Clone, Eq, PartialEq, Default)]
